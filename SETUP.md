@@ -29,7 +29,7 @@ Open the new file and edit only the `CONFIG` object near the top of the `<script
 ```js
 const CONFIG = {
   pageTitle:    "SWID Week 7 Quiz – <topic>",
-  eyebrow:      "Solavise Women in Data · Week 7 · Saturday",
+  eyebrow:      "Solavise Women in Data · Session 7",
   titleHtml:    '<Session Title><br>with <span><Tool/Topic></span>',
   subtitle:     "10 questions · <short description>",
   quizName:     "Week 7 - <Session Title>",
