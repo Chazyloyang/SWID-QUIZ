@@ -28,11 +28,11 @@ Open the new file and edit only the `CONFIG` object near the top of the `<script
 
 ```js
 const CONFIG = {
-  pageTitle:    "SWID Week 7 Quiz – <topic>",
+  pageTitle:    "SWID Session 7 Quiz – <topic>",
   eyebrow:      "Solavise Women in Data · Session 7",
   titleHtml:    '<Session Title><br>with <span><Tool/Topic></span>',
   subtitle:     "10 questions · <short description>",
-  quizName:     "Week 7 - <Session Title>",
+  quizName:     "Session 7 - <Session Title>",
   sheetEndpoint: "https://script.google.com/macros/s/PASTE_YOUR_DEPLOYMENT_ID/exec"
 };
 ```
@@ -49,7 +49,7 @@ const CONFIG = {
 
 ## How the sheet is organized
 
-- **One tab per session.** The tab name comes straight from `CONFIG.quizName` in the quiz file (e.g. "Week 7 - Data Visualization"). If two quiz files ever share the same `quizName`, they'll write into the same tab — keep each week's `quizName` unique.
+- **One tab per session.** The tab name comes straight from `CONFIG.quizName` in the quiz file (e.g. "Session 7 - Data Visualization"). If two quiz files ever share the same `quizName`, they'll write into the same tab — keep each session's `quizName` unique.
 - **One row per student, per tab.** Columns are `Timestamp, Name, Email, Score, Time Taken (s)`, then one column per question (headed with the question text) showing `Correct` / `Incorrect`.
 - **Retakes overwrite, not duplicate.** If the same student (matched by name + email) submits the same quiz again, their existing row is updated in place rather than adding a second row — so a tab never has more than one row per student.
 - **Cross-session view:** since every week is a tab in the same spreadsheet, you can open a student's row on each week's tab to track their performance across the cohort, or copy a summary row from each tab into a combined sheet if you want a single trend view.
