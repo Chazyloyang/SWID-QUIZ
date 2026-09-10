@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SWID Week 6 Quiz – Data Manipulation with Pandas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222636;
+    --border: #2e3347;
+    --orange: #fcc54e;
+    --orange-dim: #fcc54e22;
+    --on-accent: #241a06;
+    --blue: #4a9eff;
+    --blue-dim: #4a9eff18;
+    --green: #3dd68c;
+    --green-dim: #3dd68c18;
+    --red: #ff5c5c;
+    --red-dim: #ff5c5c18;
+    --text: #e8eaf0;
+    --muted: #8b8fa8;
+    --code-bg: #0a0c12;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 60px;
+  }
+
+  .header {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  h1 span { color: var(--orange); }
+  .subtitle { color: var(--muted); font-size: 14px; }
+
+  .scoreboard {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .score-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 100px;
+  }
+  .score-box .val {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--orange);
+    line-height: 1;
+  }
+  .score-box .label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .streak-box .val { color: var(--green); }
+
+  .progress-wrap {
+    width: 100%;
+    max-width: 720px;
+    background: var(--surface);
+    border-radius: 99px;
+    height: 6px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--blue));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 720px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .q-num { font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .q-tag {
+    font-size: 11px;
+    background: var(--blue-dim);
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    border-radius: 99px;
+    padding: 2px 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .question {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: #c8d0e8;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--orange);
+    background: var(--orange-dim);
+    transform: translateX(3px);
+  }
+  .option-btn .opt-label {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .option-btn.correct { border-color: var(--green); background: var(--green-dim); }
+  .option-btn.correct .opt-label { background: var(--green); color: #0f1117; }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-dim); }
+  .option-btn.wrong .opt-label { background: var(--red); color: #fff; }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--green-dim); border: 1px solid var(--green); color: var(--green); }
+  .feedback.wrong-fb { background: var(--red-dim); border: 1px solid var(--red); color: #ff8f8f; }
+
+  .nav { width: 100%; max-width: 720px; display: flex; justify-content: flex-end; }
+  .next-btn {
+    background: var(--orange);
+    color: var(--on-accent);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 32px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .next-btn:hover { opacity: 0.9; transform: scale(1.02); }
+  .next-btn.show { display: block; }
+  .next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .results {
+    width: 100%; max-width: 720px;
+    text-align: center;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .results.show { display: block; }
+  .results-emoji { font-size: 56px; margin-bottom: 12px; }
+  .results h2 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .results .score-big { font-size: 52px; font-weight: 700; color: var(--orange); margin: 20px 0 4px; line-height: 1; }
+  .results .score-label { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .results-grid .score-box .val { font-size: 22px; }
+  .restart-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--orange);
+    color: var(--orange);
+    border-radius: 10px;
+    padding: 14px 32px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .restart-btn:hover { background: var(--orange-dim); }
+  .results-note { color: var(--muted); font-size: 12px; margin: -12px 0 20px; min-height: 16px; }
+
+  .streak-flash {
+    position: fixed;
+    top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-60px);
+    background: var(--green);
+    color: #0f1117;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 99px;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    pointer-events: none;
+  }
+  .streak-flash.show { transform: translateX(-50%) translateY(0); }
+
+  #name-screen { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .name-card { max-width: 480px; }
+  .name-card h2 { font-size: 19px; font-weight: 700; margin-bottom: 20px; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; text-align: left; }
+  .field label { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .field label .req { color: var(--orange); }
+  .field label .opt { color: var(--muted); font-weight: 400; }
+  .field input {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input::placeholder { color: var(--muted); opacity: 0.7; }
+  .field input:focus { border-color: var(--orange); }
+  #startQuizBtn { width: 100%; }
+
+  .saving-note {
+    display: none;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 20px 0;
+  }
+  .saving-note.show { display: flex; justify-content: center; align-items: center; gap: 10px; }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="streak-flash" id="streakFlash">🔥 Streak!</div>
+
+<div id="name-screen">
+  <div class="header">
+    <div class="eyebrow" id="nsEyebrow"></div>
+    <h1 id="nsTitle"></h1>
+    <p class="subtitle" id="nsSubtitle"></p>
+  </div>
+  <div class="card name-card">
+    <h2>Before you start</h2>
+    <div class="field">
+      <label for="participant-name">Full Name <span class="req">*</span></label>
+      <input type="text" id="participant-name" placeholder="e.g. Jane Doe" autocomplete="name" />
+    </div>
+    <div class="field">
+      <label for="participant-email">Email <span class="opt">(optional)</span></label>
+      <input type="email" id="participant-email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <button class="next-btn show" id="startQuizBtn" disabled>Start Quiz →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none;">
+
+<div class="header">
+  <div class="eyebrow" id="qsEyebrow"></div>
+  <h1 id="qsTitle"></h1>
+  <p class="subtitle" id="qsSubtitle"></p>
+  <div class="scoreboard">
+    <div class="score-box">
+      <div class="val" id="scoreVal">0</div>
+      <div class="label">Score</div>
+    </div>
+    <div class="score-box streak-box">
+      <div class="val" id="streakVal">0</div>
+      <div class="label">Streak 🔥</div>
+    </div>
+    <div class="score-box">
+      <div class="val" id="qVal">1/10</div>
+      <div class="label">Question</div>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+</div>
+
+<div id="quizArea"></div>
+<div class="nav"><button class="next-btn" id="nextBtn">Next Question →</button></div>
+<div class="saving-note" id="savingNote"><span class="spinner"></span> Saving your results…</div>
+
+<div class="results" id="results">
+  <div class="results-emoji" id="resultsEmoji">🎉</div>
+  <h2 id="resultsTitle">Quiz Complete!</h2>
+  <div class="score-big" id="resultsBig">0/10</div>
+  <div class="score-label" id="resultsLabel">Keep practising!</div>
+  <div class="results-grid">
+    <div class="score-box"><div class="val" id="rCorrect">0</div><div class="label">Correct</div></div>
+    <div class="score-box"><div class="val" id="rWrong">0</div><div class="label">Wrong</div></div>
+    <div class="score-box streak-box"><div class="val" id="rStreak">0</div><div class="label">Best Streak</div></div>
+  </div>
+  <p class="results-note" id="resultsSavedNote"></p>
+  <button class="restart-btn" onclick="restart()">Try Again</button>
+</div>
+
+</div><!-- /quiz-screen -->
+
+<script>
+// ─── Per-week config ─────────────────────────────────────────────────────────
+// Edit these 5 lines when reusing this file for a new week — nothing else
+// needs to change to rebrand the quiz for a new session.
+const CONFIG = {
+  pageTitle:    "SWID Week 6 Quiz – Data Manipulation with Pandas",
+  eyebrow:      "Solavise Women in Data · Week 6 · Saturday",
+  titleHtml:    'Data Manipulation<br>with <span>Pandas</span>',
+  subtitle:     "10 questions · Filtering, Grouping &amp; Business Analysis",
+  quizName:     "Week 6 - Data Manipulation with Pandas",
+  // Paste the Web App URL from your Google Apps Script deployment (see SETUP.md).
+  sheetEndpoint: "https://script.google.com/macros/s/PASTE_YOUR_DEPLOYMENT_ID/exec"
+};
+
+function applyBranding() {
+  document.title = CONFIG.pageTitle;
+  document.getElementById('nsEyebrow').textContent = CONFIG.eyebrow;
+  document.getElementById('nsTitle').innerHTML = CONFIG.titleHtml;
+  document.getElementById('nsSubtitle').innerHTML = CONFIG.subtitle;
+  document.getElementById('qsEyebrow').textContent = CONFIG.eyebrow;
+  document.getElementById('qsTitle').innerHTML = CONFIG.titleHtml;
+  document.getElementById('qsSubtitle').innerHTML = CONFIG.subtitle;
+}
+applyBranding();
+
+// ─── Name-entry screen ───────────────────────────────────────────────────────
+let participantName = '', participantEmail = '', quizStartTime = 0;
+
+const nameInput = document.getElementById('participant-name');
+const emailInput = document.getElementById('participant-email');
+const startQuizBtn = document.getElementById('startQuizBtn');
+
+nameInput.addEventListener('input', () => {
+  startQuizBtn.disabled = nameInput.value.trim().length === 0;
+});
+
+startQuizBtn.addEventListener('click', () => {
+  if (nameInput.value.trim().length === 0) return;
+  participantName = nameInput.value.trim();
+  participantEmail = emailInput.value.trim();
+  document.getElementById('name-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  quizStartTime = Date.now();
+  init();
+});
+
+// ─── Question bank ───────────────────────────────────────────────────────────
+// Each question has:
+//   correctFeedback  – shown when the student picks the right answer
+//   wrongFeedback    – shown when the student picks a wrong answer
+// ─────────────────────────────────────────────────────────────────────────────
+const ALL_QUESTIONS = [
+  {
+    tag: "Filtering",
+    question: "You want to see only rows where Sales are above 1000. Which line of code does this correctly?",
+    options: [
+      { text: 'df[df["Sales"] > 1000]',   correct: true  },
+      { text: 'df["Sales" > 1000]',        correct: false },
+      { text: 'df.filter("Sales", 1000)',   correct: false },
+      { text: 'df.where(Sales > 1000)',     correct: false }
+    ],
+    correctFeedback: "Well done! Boolean indexing — df[condition] — is the standard way to filter rows in Pandas. The condition goes inside the square brackets and only the matching rows are returned.",
+    wrongFeedback: "Not quite. The correct answer is df[df[\"Sales\"] > 1000]. This is called boolean indexing — you put the condition inside the square brackets and Pandas returns only the rows where it is true."
+  },
+  {
+    tag: "Filtering",
+    question: "Which symbol do you use to combine two filter conditions with AND in Pandas?",
+    options: [
+      { text: "&&",  correct: false },
+      { text: "and", correct: false },
+      { text: "&",   correct: true  },
+      { text: "||",  correct: false }
+    ],
+    correctFeedback: "Correct! In Pandas you use a single & between conditions. Each condition must also be wrapped in its own parentheses. Using the word 'and' will raise an error.",
+    wrongFeedback: "Not quite. The correct symbol is a single &. In Pandas, && is not valid, and the word 'and' raises an error. Always wrap each condition in its own parentheses when using &."
+  },
+  {
+    tag: "Filtering",
+    question: "What does this code return?\n\nnorth = df[df[\"Region\"] == \"North\"]",
+    options: [
+      { text: "All rows where Region is not North",          correct: false },
+      { text: "Only the Region column",                      correct: false },
+      { text: "All rows where Region equals North",          correct: true  },
+      { text: "A count of how many rows have North",         correct: false }
+    ],
+    correctFeedback: "Correct! The == operator checks whether each row's Region value matches the string 'North' and returns only those rows.",
+    wrongFeedback: "Not quite. The == operator checks for equality, so this returns all rows where Region equals 'North'. To exclude North you would use !=, and to count rows you would use .sum() after the condition."
+  },
+  {
+    tag: "Columns",
+    question: "What is the difference between df[\"Sales\"] and df[[\"Sales\"]] in Pandas?",
+    options: [
+      { text: "There is no difference — both give the same result",              correct: false },
+      { text: 'df["Sales"] gives a Series, df[["Sales"]] gives a DataFrame',    correct: true  },
+      { text: 'df[["Sales"]] filters the column, df["Sales"] selects everything', correct: false },
+      { text: 'df["Sales"] only works for numeric columns',                      correct: false }
+    ],
+    correctFeedback: "Correct! One bracket gives a Series (a single column as a list-like object). Two brackets give a DataFrame (a table with one column). This matters when a function expects a DataFrame rather than a Series.",
+    wrongFeedback: "Not quite. One bracket — df[\"Sales\"] — returns a Series. Two brackets — df[[\"Sales\"]] — return a one-column DataFrame. They look similar but behave differently, especially when you need a DataFrame for further operations."
+  },
+  {
+    tag: "Grouping",
+    question: "You want to find the total sales for each region. Which code does this?",
+    options: [
+      { text: 'df.total("Region", "Sales")',          correct: false },
+      { text: 'df.groupby("Region")["Sales"].sum()',  correct: true  },
+      { text: 'df.sum("Sales").groupby("Region")',    correct: false },
+      { text: 'df["Region"].group()["Sales"]',        correct: false }
+    ],
+    correctFeedback: "Correct! groupby() splits the data into groups, you then select the column to work on, and call the aggregation — in this case .sum().",
+    wrongFeedback: "Not quite. The correct code is df.groupby(\"Region\")[\"Sales\"].sum(). groupby() comes first, then you select the column in square brackets, then call .sum() to total the values in each group."
+  },
+  {
+    tag: "Grouping",
+    question: "What does the .agg() method let you do in a groupby operation?",
+    options: [
+      { text: "It adds a new column to the DataFrame",                        correct: false },
+      { text: "It removes duplicate rows before grouping",                     correct: false },
+      { text: "It runs multiple aggregations at once, like sum, mean, and max", correct: true  },
+      { text: "It sorts the result in ascending order",                        correct: false }
+    ],
+    correctFeedback: "Correct! .agg([\"sum\", \"mean\", \"max\"]) runs all three calculations in one step, saving you from writing three separate groupby lines.",
+    wrongFeedback: "Not quite. .agg() lets you run several aggregation functions at the same time — for example .agg([\"sum\", \"mean\", \"max\"]) gives you all three results in one table. It does not add columns, remove duplicates, or sort data."
+  },
+  {
+    tag: "Grouping",
+    question: "You run: df.groupby(\"Category\")[\"Sales\"].mean()\n\nWhat does the output show?",
+    options: [
+      { text: "The total sales for each category",          correct: false },
+      { text: "The average sales value for each category",  correct: true  },
+      { text: "The number of rows in each category",        correct: false },
+      { text: "The highest sale value in each category",    correct: false }
+    ],
+    correctFeedback: "Correct! .mean() calculates the average. To get total sales use .sum(), to count rows use .count(), and to find the highest value use .max().",
+    wrongFeedback: "Not quite. .mean() calculates the average, so this shows the average sales value for each category. To get totals use .sum(), to count rows use .count(), and to get the highest value use .max()."
+  },
+  {
+    tag: "Business Questions",
+    question: "You have already grouped and summed sales by region. Which method do you chain on to find the region with the highest total?",
+    code: 'df.groupby("Region")["Sales"].sum()',
+    options: [
+      { text: ".max()",         correct: false },
+      { text: ".sort_values()", correct: false },
+      { text: ".idxmax()",      correct: true  },
+      { text: ".first()",       correct: false }
+    ],
+    correctFeedback: "Correct! .idxmax() returns the index label of the highest value — here that means the region name. .max() would return the number itself, not the name.",
+    wrongFeedback: "Not quite. The answer is .idxmax(). This returns the label (the region name) of the row with the highest value. .max() returns the highest number, not the name of the region."
+  },
+  {
+    tag: "Business Questions",
+    question: "A colleague says: 'I want to see the Region and Sales columns only.' Which code is correct?",
+    options: [
+      { text: 'df["Region", "Sales"]',          correct: false },
+      { text: 'df[["Region", "Sales"]]',         correct: true  },
+      { text: 'df.select("Region", "Sales")',    correct: false },
+      { text: 'df.columns("Region", "Sales")',   correct: false }
+    ],
+    correctFeedback: "Correct! To select multiple columns you pass a list of names inside double brackets: df[[\"col1\", \"col2\"]]. A single bracket would cause an error because Pandas would look for one column named 'Region, Sales'.",
+    wrongFeedback: "Not quite. The correct code is df[[\"Region\", \"Sales\"]] — a list of column names inside double brackets. Using a single bracket causes an error. Pandas has no .select() or .columns() methods for this purpose."
+  },
+  {
+    tag: "Business Questions",
+    question: "You want to find which month had the highest total units sold. What is the correct approach?",
+    options: [
+      { text: 'df.groupby("Month")["Units"].sum().idxmax()', correct: true  },
+      { text: 'df["Month"].max()["Units"]',                  correct: false },
+      { text: 'df.groupby("Units")["Month"].sum()',          correct: false },
+      { text: 'df.max("Month")["Units"]',                    correct: false }
+    ],
+    correctFeedback: "Correct! First group by Month, then sum the Units for each month, then use .idxmax() to get the month name with the highest total. This is a clean three-step pipeline.",
+    wrongFeedback: "Not quite. The correct code is df.groupby(\"Month\")[\"Units\"].sum().idxmax(). You group by Month first, sum the Units in each group, then use .idxmax() to get the name of the month with the highest total."
+  }
+];
+
+// ─── Utility ─────────────────────────────────────────────────────────────────
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function escHtml(s) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let questions, current, score, streak, bestStreak, answered, answerLog;
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+function init() {
+  // Shuffle the question order, and for each question shuffle its options
+  // while keeping track of which option is correct.
+  questions = shuffleArray(ALL_QUESTIONS).map(q => {
+    const shuffledOptions = shuffleArray(q.options);
+    return { ...q, options: shuffledOptions };
+    // shuffledOptions[i].correct tells us definitively which is right
+    // — no index-mapping needed
+  });
+
+  current = 0; score = 0; streak = 0; bestStreak = 0; answered = false; answerLog = [];
+
+  document.getElementById('scoreVal').textContent = 0;
+  document.getElementById('streakVal').textContent = 0;
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('quizArea').style.display = '';
+  document.querySelector('.progress-wrap').style.display = '';
+  document.querySelector('.nav').style.display = '';
+
+  renderQuestion();
+}
+
+// ─── Render ───────────────────────────────────────────────────────────────────
+function renderQuestion() {
+  answered = false;
+  const q = questions[current];
+  const labels = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('qVal').textContent = (current + 1) + '/10';
+  document.getElementById('progressBar').style.width = ((current / 10) * 100) + '%';
+  document.getElementById('nextBtn').classList.remove('show');
+
+  const codeHtml = q.code
+    ? '<div class="code-block">' + escHtml(q.code) + '</div>'
+    : '';
+
+  // Build option buttons.
+  // Each button stores its position index (i) as data-index.
+  // The choose() function reads q.options[i].correct — no index mapping needed.
+  const optionsHtml = q.options.map((opt, i) =>
+    '<button class="option-btn" data-index="' + i + '" onclick="choose(' + i + ')">' +
+      '<span class="opt-label">' + labels[i] + '</span>' +
+      '<span>' + escHtml(opt.text) + '</span>' +
+    '</button>'
+  ).join('');
+
+  document.getElementById('quizArea').innerHTML =
+    '<div class="card">' +
+      '<div class="q-meta">' +
+        '<span class="q-num">Question ' + (current + 1) + ' of 10</span>' +
+        '<span class="q-tag">' + q.tag + '</span>' +
+      '</div>' +
+      '<div class="question">' + escHtml(q.question) + '</div>' +
+      codeHtml +
+      '<div class="options">' + optionsHtml + '</div>' +
+      '<div class="feedback" id="feedback"></div>' +
+    '</div>';
+}
+
+// ─── Answer handler ───────────────────────────────────────────────────────────
+function choose(clickedIndex) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[current];
+  const isCorrect = q.options[clickedIndex].correct;
+  const btns = document.querySelectorAll('.option-btn');
+
+  // Disable all buttons immediately
+  btns.forEach(b => { b.disabled = true; });
+
+  // Mark the clicked button
+  btns[clickedIndex].classList.add(isCorrect ? 'correct' : 'wrong');
+
+  // Always highlight the correct answer (in case student was wrong)
+  btns.forEach((b, i) => {
+    if (q.options[i].correct) b.classList.add('correct');
+  });
+
+  // Record this answer for the submission sent to the results sheet
+  answerLog.push({
+    question: q.question,
+    selected: q.options[clickedIndex].text,
+    correct: isCorrect
+  });
+
+  // Update score and streak
+  if (isCorrect) {
+    score++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    if (streak >= 3) showStreakFlash();
+  } else {
+    streak = 0;
+  }
+
+  document.getElementById('scoreVal').textContent = score;
+  document.getElementById('streakVal').textContent = streak;
+
+  // Show the right feedback text
+  const fb = document.getElementById('feedback');
+  fb.textContent = (isCorrect ? '✅ ' : '❌ ') + (isCorrect ? q.correctFeedback : q.wrongFeedback);
+  fb.className = 'feedback show ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+// ─── Streak flash ─────────────────────────────────────────────────────────────
+function showStreakFlash() {
+  const el = document.getElementById('streakFlash');
+  el.textContent = '🔥 ' + streak + ' in a row!';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+// ─── Next button ──────────────────────────────────────────────────────────────
+document.getElementById('nextBtn').addEventListener('click', () => {
+  current++;
+  if (current >= 10) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+});
+
+// ─── Results ──────────────────────────────────────────────────────────────────
+// The submission is sent to the results sheet BEFORE this screen appears, so
+// nothing is lost if the participant closes the tab right after finishing.
+function showResults() {
+  document.getElementById('quizArea').style.display = 'none';
+  document.querySelector('.nav').style.display = 'none';
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('savingNote').classList.add('show');
+
+  const timeTakenSeconds = Math.round((Date.now() - quizStartTime) / 1000);
+  submitQuiz(participantName, participantEmail, answerLog, score, timeTakenSeconds);
+}
+
+function submitQuiz(name, email, answers, finalScore, timeTakenSeconds) {
+  fetch(CONFIG.sheetEndpoint, {
+    method: 'POST',
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      quizName: CONFIG.quizName,
+      score: finalScore,
+      timeTakenSeconds: timeTakenSeconds,
+      answers: answers
+    })
+  })
+  .then(() => renderResultsScreen(true))
+  .catch((err) => {
+    // Never block the participant on a failed save — just flag it for follow-up.
+    console.error('Could not save quiz result to the sheet.', err);
+    renderResultsScreen(false);
+  });
+}
+
+function renderResultsScreen(saved) {
+  document.getElementById('savingNote').classList.remove('show');
+
+  const pct = Math.round((score / 10) * 100);
+  let emoji = '💪', title = 'Keep practising!', label = 'Review the session notes and try again.';
+  if (pct === 100) { emoji = '🏆'; title = 'Perfect Score!'; label = 'Outstanding — you nailed every question!'; }
+  else if (pct >= 80) { emoji = '🎉'; title = 'Great work!'; label = 'You have a solid grip on Pandas manipulation.'; }
+  else if (pct >= 60) { emoji = '👏'; title = 'Good effort!'; label = 'A little more practice and you will have this down.'; }
+
+  document.getElementById('resultsEmoji').textContent = emoji;
+  document.getElementById('resultsTitle').textContent = title;
+  document.getElementById('resultsBig').textContent = score + '/10';
+  document.getElementById('resultsLabel').textContent = label;
+  document.getElementById('rCorrect').textContent = score;
+  document.getElementById('rWrong').textContent = 10 - score;
+  document.getElementById('rStreak').textContent = bestStreak;
+  document.getElementById('resultsSavedNote').textContent = saved
+    ? `Your results have been recorded, thank you ${participantName}.`
+    : `Thanks ${participantName} — we couldn't reach the results sheet, but your score above is final.`;
+  document.getElementById('results').classList.add('show');
+}
+
+function restart() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('name-screen').style.display = 'flex';
+  nameInput.value = '';
+  emailInput.value = '';
+  startQuizBtn.disabled = true;
+  participantName = '';
+  participantEmail = '';
+}
+</script>
+</body>
+</html>
