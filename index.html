@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SWID Weekly Quizzes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222636;
+    --border: #2e3347;
+    --orange: #fcc54e;
+    --orange-dim: #fcc54e22;
+    --on-accent: #241a06;
+    --blue: #4a9eff;
+    --text: #e8eaf0;
+    --muted: #8b8fa8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 16px 60px;
+  }
+
+  .header { width: 100%; max-width: 640px; margin-bottom: 36px; text-align: center; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--orange); font-weight: 600; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .subtitle { color: var(--muted); font-size: 14px; }
+
+  .list { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 12px; }
+
+  .quiz-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .quiz-link:hover { border-color: var(--orange); background: var(--orange-dim); transform: translateX(3px); }
+
+  .quiz-week { font-size: 11px; color: var(--orange); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .quiz-title { font-size: 16px; font-weight: 600; }
+  .quiz-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .arrow { font-size: 20px; color: var(--orange); flex-shrink: 0; }
+
+  .empty {
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+    padding: 32px 20px;
+    border: 1.5px dashed var(--border);
+    border-radius: 14px;
+  }
+
+  footer { margin-top: 40px; color: var(--muted); font-size: 12px; text-align: center; }
+  footer a { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Solavise Women in Data</div>
+  <h1>Weekly Quizzes</h1>
+  <p class="subtitle">Pick a session below to take that week's quiz.</p>
+</div>
+
+<div class="list" id="list"></div>
+
+<footer>Facilitator? See <a href="SETUP.md">SETUP.md</a> to add a new week.</footer>
+
+<script>
+  // Add one entry here each time a new week's quiz file is created —
+  // this is the only edit needed to list it on this page.
+  const WEEKS = [
+    {
+      week: "Week 6 · Saturday",
+      title: "Data Manipulation with Pandas",
+      sub: "Filtering, Grouping & Business Analysis",
+      file: "SWID_Week6_Quiz_Source.html"
+    }
+  ];
+
+  const list = document.getElementById('list');
+  if (WEEKS.length === 0) {
+    list.innerHTML = '<div class="empty">No quizzes published yet.</div>';
+  } else {
+    list.innerHTML = WEEKS.map(w => `
+      <a class="quiz-link" href="${w.file}">
+        <div>
+          <div class="quiz-week">${w.week}</div>
+          <div class="quiz-title">${w.title}</div>
+          <div class="quiz-sub">${w.sub}</div>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    `).join('');
+  }
+</script>
+</body>
+</html>

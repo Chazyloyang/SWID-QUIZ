@@ -39,12 +39,13 @@ const CONFIG = {
 
 - `sheetEndpoint` only needs to be pasted in once per file — you can leave it as-is when copying an already-configured file to the next week.
 - Replace the `ALL_QUESTIONS` array further down with that week's 10 questions. See [AI_QUESTION_PROMPT.md](AI_QUESTION_PROMPT.md) for a ready-to-use prompt that generates this array from an AI chat in the correct format — no manual JS writing required.
+- Add one entry for the new file to the `WEEKS` array near the top of `index.html`'s `<script>` block, so it appears on the quiz list page. That's the only edit `index.html` ever needs.
 
 ## 3. Test before sharing
 
 1. Open the quiz file in a browser, fill in a test name, and complete all 10 questions.
 2. Check the Google Sheet — a new tab named after that quiz's `quizName` should appear, with one row for your test name showing the score and Correct/Incorrect per question.
-3. Delete the test row, then share the quiz file/link with participants.
+3. Delete the test row, then share the quiz link (or the `index.html` list page) with participants.
 
 ## How the sheet is organized
 
