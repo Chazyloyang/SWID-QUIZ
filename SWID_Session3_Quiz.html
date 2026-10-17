@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SWID Session 3 Quiz – Getting Started with Git &amp; GitHub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222636;
+    --border: #2e3347;
+    --orange: #fcc54e;
+    --orange-dim: #fcc54e22;
+    --on-accent: #241a06;
+    --blue: #4a9eff;
+    --blue-dim: #4a9eff18;
+    --green: #3dd68c;
+    --green-dim: #3dd68c18;
+    --red: #ff5c5c;
+    --red-dim: #ff5c5c18;
+    --text: #e8eaf0;
+    --muted: #8b8fa8;
+    --code-bg: #0a0c12;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 60px;
+  }
+
+  .header {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  h1 span { color: var(--orange); }
+  .subtitle { color: var(--muted); font-size: 14px; }
+
+  .scoreboard {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .score-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 100px;
+  }
+  .score-box .val {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--orange);
+    line-height: 1;
+  }
+  .score-box .label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .streak-box .val { color: var(--green); }
+
+  .progress-wrap {
+    width: 100%;
+    max-width: 720px;
+    background: var(--surface);
+    border-radius: 99px;
+    height: 6px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--blue));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 720px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .q-num { font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .q-tag {
+    font-size: 11px;
+    background: var(--blue-dim);
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    border-radius: 99px;
+    padding: 2px 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .question {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: #c8d0e8;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--orange);
+    background: var(--orange-dim);
+    transform: translateX(3px);
+  }
+  .option-btn .opt-label {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .option-btn.correct { border-color: var(--green); background: var(--green-dim); }
+  .option-btn.correct .opt-label { background: var(--green); color: #0f1117; }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-dim); }
+  .option-btn.wrong .opt-label { background: var(--red); color: #fff; }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--green-dim); border: 1px solid var(--green); color: var(--green); }
+  .feedback.wrong-fb { background: var(--red-dim); border: 1px solid var(--red); color: #ff8f8f; }
+
+  .nav { width: 100%; max-width: 720px; display: flex; justify-content: flex-end; }
+  .next-btn {
+    background: var(--orange);
+    color: var(--on-accent);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 32px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .next-btn:hover { opacity: 0.9; transform: scale(1.02); }
+  .next-btn.show { display: block; }
+  .next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .results {
+    width: 100%; max-width: 720px;
+    text-align: center;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .results.show { display: block; }
+  .results-emoji { font-size: 56px; margin-bottom: 12px; }
+  .results h2 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .results .score-big { font-size: 52px; font-weight: 700; color: var(--orange); margin: 20px 0 4px; line-height: 1; }
+  .results .score-label { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .results-grid .score-box .val { font-size: 22px; }
+  .restart-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--orange);
+    color: var(--orange);
+    border-radius: 10px;
+    padding: 14px 32px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .restart-btn:hover { background: var(--orange-dim); }
+  .results-note { color: var(--muted); font-size: 12px; margin: -12px 0 20px; min-height: 16px; }
+
+  .streak-flash {
+    position: fixed;
+    top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-60px);
+    background: var(--green);
+    color: #0f1117;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 99px;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    pointer-events: none;
+  }
+  .streak-flash.show { transform: translateX(-50%) translateY(0); }
+
+  #name-screen { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .name-card { max-width: 480px; }
+  .name-card h2 { font-size: 19px; font-weight: 700; margin-bottom: 20px; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; text-align: left; }
+  .field label { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .field label .req { color: var(--orange); }
+  .field label .opt { color: var(--muted); font-weight: 400; }
+  .field input {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input::placeholder { color: var(--muted); opacity: 0.7; }
+  .field input:focus { border-color: var(--orange); }
+  #startQuizBtn { width: 100%; }
+
+  .saving-note {
+    display: none;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 20px 0;
+  }
+  .saving-note.show { display: flex; justify-content: center; align-items: center; gap: 10px; }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="streak-flash" id="streakFlash">🔥 Streak!</div>
+
+<div id="name-screen">
+  <div class="header">
+    <div class="eyebrow" id="nsEyebrow"></div>
+    <h1 id="nsTitle"></h1>
+    <p class="subtitle" id="nsSubtitle"></p>
+  </div>
+  <div class="card name-card">
+    <h2>Before you start</h2>
+    <div class="field">
+      <label for="participant-name">Full Name <span class="req">*</span></label>
+      <input type="text" id="participant-name" placeholder="e.g. Jane Doe" autocomplete="name" />
+    </div>
+    <div class="field">
+      <label for="participant-email">Email <span class="opt">(optional)</span></label>
+      <input type="email" id="participant-email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <button class="next-btn show" id="startQuizBtn" disabled>Start Quiz →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none;">
+
+<div class="header">
+  <div class="eyebrow" id="qsEyebrow"></div>
+  <h1 id="qsTitle"></h1>
+  <p class="subtitle" id="qsSubtitle"></p>
+  <div class="scoreboard">
+    <div class="score-box">
+      <div class="val" id="scoreVal">0</div>
+      <div class="label">Score</div>
+    </div>
+    <div class="score-box streak-box">
+      <div class="val" id="streakVal">0</div>
+      <div class="label">Streak 🔥</div>
+    </div>
+    <div class="score-box">
+      <div class="val" id="qVal">1/10</div>
+      <div class="label">Question</div>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+</div>
+
+<div id="quizArea"></div>
+<div class="nav"><button class="next-btn" id="nextBtn">Next Question →</button></div>
+<div class="saving-note" id="savingNote"><span class="spinner"></span> Saving your results…</div>
+
+<div class="results" id="results">
+  <div class="results-emoji" id="resultsEmoji">🎉</div>
+  <h2 id="resultsTitle">Quiz Complete!</h2>
+  <div class="score-big" id="resultsBig">0/10</div>
+  <div class="score-label" id="resultsLabel">Keep practising!</div>
+  <div class="results-grid">
+    <div class="score-box"><div class="val" id="rCorrect">0</div><div class="label">Correct</div></div>
+    <div class="score-box"><div class="val" id="rWrong">0</div><div class="label">Wrong</div></div>
+    <div class="score-box streak-box"><div class="val" id="rStreak">0</div><div class="label">Best Streak</div></div>
+  </div>
+  <p class="results-note" id="resultsSavedNote"></p>
+  <button class="restart-btn" onclick="restart()">Try Again</button>
+</div>
+
+</div><!-- /quiz-screen -->
+
+<script>
+// ─── Per-week config ─────────────────────────────────────────────────────────
+// Edit these 5 lines when reusing this file for a new week — nothing else
+// needs to change to rebrand the quiz for a new session.
+const CONFIG = {
+  pageTitle:    "SWID Session 3 Quiz – Getting Started with Git & GitHub",
+  eyebrow:      "Solavise Women in Data · Session 3",
+  titleHtml:    'Getting Started<br>with <span>Git &amp; GitHub</span>',
+  subtitle:     "10 questions · Git Basics, Repositories, Branching &amp; .gitignore",
+  quizName:     "Session 3 - Getting Started with Git & GitHub",
+  // Paste the Web App URL from your Google Apps Script deployment (see SETUP.md).
+  sheetEndpoint: "https://script.google.com/macros/s/AKfycbz9DXu5mDjoalIbhvBjcAc2IVsSLfP3i5B_6Mmee72IOLxpwOLE03d8veg1ZFRFkVZzXQ/exec"
+};
+
+function applyBranding() {
+  document.title = CONFIG.pageTitle;
+  document.getElementById('nsEyebrow').textContent = CONFIG.eyebrow;
+  document.getElementById('nsTitle').innerHTML = CONFIG.titleHtml;
+  document.getElementById('nsSubtitle').innerHTML = CONFIG.subtitle;
+  document.getElementById('qsEyebrow').textContent = CONFIG.eyebrow;
+  document.getElementById('qsTitle').innerHTML = CONFIG.titleHtml;
+  document.getElementById('qsSubtitle').innerHTML = CONFIG.subtitle;
+}
+applyBranding();
+
+// ─── Name-entry screen ───────────────────────────────────────────────────────
+let participantName = '', participantEmail = '', quizStartTime = 0;
+
+const nameInput = document.getElementById('participant-name');
+const emailInput = document.getElementById('participant-email');
+const startQuizBtn = document.getElementById('startQuizBtn');
+
+nameInput.addEventListener('input', () => {
+  startQuizBtn.disabled = nameInput.value.trim().length === 0;
+});
+
+startQuizBtn.addEventListener('click', () => {
+  if (nameInput.value.trim().length === 0) return;
+  participantName = nameInput.value.trim();
+  participantEmail = emailInput.value.trim();
+  document.getElementById('name-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  quizStartTime = Date.now();
+  init();
+});
+
+// ─── Question bank ───────────────────────────────────────────────────────────
+// Each question has:
+//   correctFeedback  – shown when the student picks the right answer
+//   wrongFeedback    – shown when the student picks a wrong answer
+// ─────────────────────────────────────────────────────────────────────────────
+const ALL_QUESTIONS = [
+  {
+    tag: "Git vs GitHub",
+    question: "Which statement best describes the relationship between Git and GitHub?",
+    options: [
+      { text: "Git is a version control tool on your computer; GitHub is a cloud platform that hosts Git repositories", correct: true  },
+      { text: "Git is a website; GitHub is a tool installed on your computer",                                         correct: false },
+      { text: "Git and GitHub are two names for exactly the same thing",                                               correct: false },
+      { text: "GitHub is a code editor and Git is its programming language",                                           correct: false }
+    ],
+    correctFeedback: "Correct! Git is the free, open-source tool that tracks your changes locally. GitHub is the website that stores your Git repositories online so you can back up, share and collaborate.",
+    wrongFeedback: "Not quite. Git is the version control tool installed on your computer, while GitHub is the cloud hosting platform that stores your Git repositories online. They work together but they are not the same thing."
+  },
+  {
+    tag: "Git vs GitHub",
+    question: "In the analogy 'Git is your camera that takes the photos', what is GitHub?",
+    options: [
+      { text: "The photographer",                       correct: false },
+      { text: "The lens",                               correct: false },
+      { text: "Instagram, where the photos are stored and shared", correct: true  },
+      { text: "The memory card inside the camera",      correct: false }
+    ],
+    correctFeedback: "Correct! Git takes the snapshots (commits) on your machine, and GitHub is where those snapshots are stored and shared. You can use Git without GitHub, but GitHub needs Git to manage your code.",
+    wrongFeedback: "Not quite. GitHub is like Instagram — the place where your 'photos' (commits) are stored and shared online. Git is the camera that takes them. Remember: you can use Git without GitHub, but GitHub requires Git."
+  },
+  {
+    tag: "Setup",
+    question: "Which command sets your name so it is attached to all your commits on this machine?",
+    options: [
+      { text: 'git set name "Your Name"',                     correct: false },
+      { text: 'git config --global user.name "Your Name"',    correct: true  },
+      { text: 'git user.name --global "Your Name"',           correct: false },
+      { text: 'git commit --name "Your Name"',                correct: false }
+    ],
+    correctFeedback: "Correct! git config --global user.name sets your identity for every repository on your machine. Pair it with git config --global user.email, using the same email as your GitHub account so commits link to you.",
+    wrongFeedback: "Not quite. The correct command is git config --global user.name \"Your Name\". The --global flag applies it to all repositories on your computer, and you can verify it with git config user.name."
+  },
+  {
+    tag: "Repositories",
+    question: "You open a folder in your terminal and run this command. What does it do?",
+    code: "git init",
+    options: [
+      { text: "Uploads the folder to GitHub",                                   correct: false },
+      { text: "Creates a hidden .git folder that turns the folder into a Git repository", correct: true  },
+      { text: "Downloads a copy of someone else's repository",                  correct: false },
+      { text: "Saves a commit of all the files in the folder",                  correct: false }
+    ],
+    correctFeedback: "Correct! git init creates the hidden .git folder, Git's 'brain', which stores your project's history. From that point Git tracks changes in the folder. You can reveal it with ls -a.",
+    wrongFeedback: "Not quite. git init creates a hidden .git folder and turns your folder into a local repository. It does not upload anything (that is git push), download anything (that is git clone), or save a commit (that is git commit)."
+  },
+  {
+    tag: "Committing",
+    question: "What is the correct order of commands to save your first snapshot of the project?",
+    options: [
+      { text: 'git commit -m "Initial commit"  then  git add .', correct: false },
+      { text: 'git push  then  git add .',                       correct: false },
+      { text: 'git add .  then  git commit -m "Initial commit"', correct: true  },
+      { text: 'git save .  then  git commit -m "Initial commit"', correct: false }
+    ],
+    correctFeedback: "Correct! git add . stages your changes (chooses what goes into the snapshot), then git commit -m records that snapshot in your history with a message.",
+    wrongFeedback: "Not quite. You must stage first with git add ., then record the snapshot with git commit -m \"message\". Committing before staging has nothing to save, and git save is not a Git command."
+  },
+  {
+    tag: "Remotes",
+    question: "What does the -u flag do in this command?",
+    code: "git push -u origin main",
+    options: [
+      { text: "It uploads all branches, not just main",                                                correct: false },
+      { text: "It forces the push and overwrites GitHub",                                              correct: false },
+      { text: "It sets upstream tracking, so future pushes only need git push",                        correct: true  },
+      { text: "It undoes your last commit before pushing",                                             correct: false }
+    ],
+    correctFeedback: "Correct! -u links your local main branch to origin/main. After that first push, you can simply type git push (and git pull) without naming the remote and branch each time.",
+    wrongFeedback: "Not quite. The -u flag sets upstream tracking between your local branch and the remote one, so later you only need git push. It does not push all branches, force anything, or undo commits."
+  },
+  {
+    tag: "Commands",
+    question: "A teammate has pushed new changes to GitHub. Which command downloads them and merges them into your local copy?",
+    options: [
+      { text: "git push",   correct: false },
+      { text: "git pull",   correct: true  },
+      { text: "git status", correct: false },
+      { text: "git log",    correct: false }
+    ],
+    correctFeedback: "Correct! git pull downloads the latest changes from the remote repository and merges them into your local branch. git push goes the other way, uploading your commits.",
+    wrongFeedback: "Not quite. git pull downloads and merges remote changes. git push uploads your commits, git status shows the state of your working directory, and git log shows your commit history."
+  },
+  {
+    tag: "Branching",
+    question: "Which single command creates a new branch called feature-contact AND switches to it?",
+    options: [
+      { text: "git branch feature-contact",                correct: false },
+      { text: "git checkout -b feature-contact",           correct: true  },
+      { text: "git merge feature-contact",                 correct: false },
+      { text: "git switch main feature-contact",           correct: false }
+    ],
+    correctFeedback: "Correct! git checkout -b feature-contact is a shortcut for git branch feature-contact followed by git checkout feature-contact: it creates the branch and moves you onto it.",
+    wrongFeedback: "Not quite. git checkout -b feature-contact creates the branch and switches to it in one step. git branch alone only creates it without switching, and git merge combines a branch into your current one."
+  },
+  {
+    tag: "Workflow",
+    question: "Your git push is rejected because GitHub has changes you do not have locally. What should you have done before pushing?",
+    options: [
+      { text: "Run git pull origin main to bring in the remote changes first", correct: true  },
+      { text: "Delete the .git folder and start again",                         correct: false },
+      { text: "Create a brand-new GitHub account",                              correct: false },
+      { text: "Run git init again to refresh the repository",                   correct: false }
+    ],
+    correctFeedback: "Correct! 'Not pulling before pushing' is one of the most common beginner mistakes. Running git pull origin main first brings your local copy up to date, so your push is accepted.",
+    wrongFeedback: "Not quite. The fix is to run git pull origin main before pushing, so your local repository includes the latest remote changes. Deleting .git would wipe your history, and git init is only used once to create a repo."
+  },
+  {
+    tag: ".gitignore",
+    question: "Which of these files should you list in .gitignore so it is never committed to GitHub?",
+    options: [
+      { text: "index.html",                          correct: false },
+      { text: "README.md",                           correct: false },
+      { text: ".env, which holds secret keys and passwords", correct: true  },
+      { text: "style.css",                           correct: false }
+    ],
+    correctFeedback: "Correct! .env files often contain API keys and passwords, so they should never be committed. Adding them to .gitignore tells Git to stop tracking them, keeping your repo clean and secure.",
+    wrongFeedback: "Not quite. The file to ignore is .env, since it usually holds sensitive API keys and passwords. Your normal project files like index.html, README.md and style.css are meant to be tracked and shared."
+  }
+];
+
+// ─── Utility ─────────────────────────────────────────────────────────────────
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function escHtml(s) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let questions, current, score, streak, bestStreak, answered, answerLog;
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+function init() {
+  // Shuffle the question order, and for each question shuffle its options
+  // while keeping track of which option is correct.
+  questions = shuffleArray(ALL_QUESTIONS).map(q => {
+    const shuffledOptions = shuffleArray(q.options);
+    return { ...q, options: shuffledOptions };
+    // shuffledOptions[i].correct tells us definitively which is right
+    // — no index-mapping needed
+  });
+
+  current = 0; score = 0; streak = 0; bestStreak = 0; answered = false; answerLog = [];
+
+  document.getElementById('scoreVal').textContent = 0;
+  document.getElementById('streakVal').textContent = 0;
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('quizArea').style.display = '';
+  document.querySelector('.progress-wrap').style.display = '';
+  document.querySelector('.nav').style.display = '';
+
+  renderQuestion();
+}
+
+// ─── Render ───────────────────────────────────────────────────────────────────
+function renderQuestion() {
+  answered = false;
+  const q = questions[current];
+  const labels = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('qVal').textContent = (current + 1) + '/10';
+  document.getElementById('progressBar').style.width = ((current / 10) * 100) + '%';
+  document.getElementById('nextBtn').classList.remove('show');
+
+  const codeHtml = q.code
+    ? '<div class="code-block">' + escHtml(q.code) + '</div>'
+    : '';
+
+  // Build option buttons.
+  // Each button stores its position index (i) as data-index.
+  // The choose() function reads q.options[i].correct — no index mapping needed.
+  const optionsHtml = q.options.map((opt, i) =>
+    '<button class="option-btn" data-index="' + i + '" onclick="choose(' + i + ')">' +
+      '<span class="opt-label">' + labels[i] + '</span>' +
+      '<span>' + escHtml(opt.text) + '</span>' +
+    '</button>'
+  ).join('');
+
+  document.getElementById('quizArea').innerHTML =
+    '<div class="card">' +
+      '<div class="q-meta">' +
+        '<span class="q-num">Question ' + (current + 1) + ' of 10</span>' +
+        '<span class="q-tag">' + q.tag + '</span>' +
+      '</div>' +
+      '<div class="question">' + escHtml(q.question) + '</div>' +
+      codeHtml +
+      '<div class="options">' + optionsHtml + '</div>' +
+      '<div class="feedback" id="feedback"></div>' +
+    '</div>';
+}
+
+// ─── Answer handler ───────────────────────────────────────────────────────────
+function choose(clickedIndex) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[current];
+  const isCorrect = q.options[clickedIndex].correct;
+  const btns = document.querySelectorAll('.option-btn');
+
+  // Disable all buttons immediately
+  btns.forEach(b => { b.disabled = true; });
+
+  // Mark the clicked button
+  btns[clickedIndex].classList.add(isCorrect ? 'correct' : 'wrong');
+
+  // Always highlight the correct answer (in case student was wrong)
+  btns.forEach((b, i) => {
+    if (q.options[i].correct) b.classList.add('correct');
+  });
+
+  // Record this answer for the submission sent to the results sheet
+  answerLog.push({
+    question: q.question,
+    selected: q.options[clickedIndex].text,
+    correct: isCorrect
+  });
+
+  // Update score and streak
+  if (isCorrect) {
+    score++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    if (streak >= 3) showStreakFlash();
+  } else {
+    streak = 0;
+  }
+
+  document.getElementById('scoreVal').textContent = score;
+  document.getElementById('streakVal').textContent = streak;
+
+  // Show the right feedback text
+  const fb = document.getElementById('feedback');
+  fb.textContent = (isCorrect ? '✅ ' : '❌ ') + (isCorrect ? q.correctFeedback : q.wrongFeedback);
+  fb.className = 'feedback show ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+// ─── Streak flash ─────────────────────────────────────────────────────────────
+function showStreakFlash() {
+  const el = document.getElementById('streakFlash');
+  el.textContent = '🔥 ' + streak + ' in a row!';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+// ─── Next button ──────────────────────────────────────────────────────────────
+document.getElementById('nextBtn').addEventListener('click', () => {
+  current++;
+  if (current >= 10) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+});
+
+// ─── Results ──────────────────────────────────────────────────────────────────
+// The submission is sent to the results sheet BEFORE this screen appears, so
+// nothing is lost if the participant closes the tab right after finishing.
+function showResults() {
+  document.getElementById('quizArea').style.display = 'none';
+  document.querySelector('.nav').style.display = 'none';
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('savingNote').classList.add('show');
+
+  const timeTakenSeconds = Math.round((Date.now() - quizStartTime) / 1000);
+  submitQuiz(participantName, participantEmail, answerLog, score, timeTakenSeconds);
+}
+
+function submitQuiz(name, email, answers, finalScore, timeTakenSeconds) {
+  fetch(CONFIG.sheetEndpoint, {
+    method: 'POST',
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      quizName: CONFIG.quizName,
+      score: finalScore,
+      timeTakenSeconds: timeTakenSeconds,
+      answers: answers
+    })
+  })
+  .then(() => renderResultsScreen(true))
+  .catch((err) => {
+    // Never block the participant on a failed save — just flag it for follow-up.
+    console.error('Could not save quiz result to the sheet.', err);
+    renderResultsScreen(false);
+  });
+}
+
+function renderResultsScreen(saved) {
+  document.getElementById('savingNote').classList.remove('show');
+
+  const pct = Math.round((score / 10) * 100);
+  let emoji = '💪', title = 'Keep practising!', label = 'Review the session notes and try again.';
+  if (pct === 100) { emoji = '🏆'; title = 'Perfect Score!'; label = 'Outstanding — you nailed every question!'; }
+  else if (pct >= 80) { emoji = '🎉'; title = 'Great work!'; label = 'You have a solid grip on Git and GitHub basics.'; }
+  else if (pct >= 60) { emoji = '👏'; title = 'Good effort!'; label = 'A little more practice and you will have this down.'; }
+
+  document.getElementById('resultsEmoji').textContent = emoji;
+  document.getElementById('resultsTitle').textContent = title;
+  document.getElementById('resultsBig').textContent = score + '/10';
+  document.getElementById('resultsLabel').textContent = label;
+  document.getElementById('rCorrect').textContent = score;
+  document.getElementById('rWrong').textContent = 10 - score;
+  document.getElementById('rStreak').textContent = bestStreak;
+  document.getElementById('resultsSavedNote').textContent = saved
+    ? `Your results have been recorded, thank you ${participantName}.`
+    : `Thanks ${participantName} — we couldn't reach the results sheet, but your score above is final.`;
+  document.getElementById('results').classList.add('show');
+}
+
+function restart() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('name-screen').style.display = 'flex';
+  nameInput.value = '';
+  emailInput.value = '';
+  startQuizBtn.disabled = true;
+  participantName = '';
+  participantEmail = '';
+}
+</script>
+</body>
+</html>
